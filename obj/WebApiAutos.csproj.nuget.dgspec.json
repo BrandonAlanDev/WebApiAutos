@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\PrimeraApi\\webcrud\\WebApiAutos\\WebApiAutos.csproj": {}
+    "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\MisApis\\WEBCRUD\\WebApiAutos\\WebApiAutos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\PrimeraApi\\webcrud\\WebApiAutos\\WebApiAutos.csproj": {
+    "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\MisApis\\WEBCRUD\\WebApiAutos\\WebApiAutos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\PrimeraApi\\webcrud\\WebApiAutos\\WebApiAutos.csproj",
+        "projectUniqueName": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\MisApis\\WEBCRUD\\WebApiAutos\\WebApiAutos.csproj",
         "projectName": "WebApiAutos",
-        "projectPath": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\PrimeraApi\\webcrud\\WebApiAutos\\WebApiAutos.csproj",
+        "projectPath": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\MisApis\\WEBCRUD\\WebApiAutos\\WebApiAutos.csproj",
         "packagesPath": "C:\\Users\\Anita\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\PrimeraApi\\webcrud\\WebApiAutos\\obj\\",
+        "outputPath": "C:\\Users\\Anita\\Documents\\ALGORITMOS\\ALGORITMOS3\\MisApis\\WEBCRUD\\WebApiAutos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -49,6 +49,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[8.0.2, )"
