@@ -1,0 +1,6 @@
+@WebApiAutos_HostAddress = http://localhost:5234
+
+GET {{WebApiAutos_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
