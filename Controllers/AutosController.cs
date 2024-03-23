@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using WebApiAutos.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace WebApiAutos.Controllers
 {
@@ -14,8 +15,8 @@ namespace WebApiAutos.Controllers
         {
             _autos = new List<Autos>
             {
-                new Autos { Marca = "Toyota", Modelo = "Corolla", Year = 2022, Caballos = 150, VelocidadMaxima = 200 },
-                new Autos { Marca = "Ford", Modelo = "Mustang", Year = 2021, Caballos = 300, VelocidadMaxima = 250 }
+                new Autos {Id = 0, Marca = "Toyota", Modelo = "Corolla", Year = 2022, Caballos = 150, VelocidadMaxima = 200 },
+                new Autos {Id = 1,  Marca = "Ford", Modelo = "Mustang", Year = 2021, Caballos = 300, VelocidadMaxima = 250 }
             };
         }
 
@@ -44,6 +45,61 @@ namespace WebApiAutos.Controllers
         {
             _autos.Add(auto);
             return CreatedAtAction(nameof(GetById), new { id = auto.Id }, auto);
+        }
+
+        [HttpPut("{id}")]
+        [Route("Put")]
+        public IActionResult UpdateAuto(int id, Autos updatedAuto)
+        {
+            var existingAuto = _autos.Find(a => a.Id == id);
+            if (existingAuto == null)
+            {
+                return NotFound();
+            }
+
+            existingAuto.Marca = updatedAuto.Marca;
+            existingAuto.Modelo = updatedAuto.Modelo;
+            existingAuto.Year = updatedAuto.Year;
+            existingAuto.Caballos = updatedAuto.Caballos;
+            existingAuto.VelocidadMaxima = updatedAuto.VelocidadMaxima;
+
+            return Ok(existingAuto);
+        }
+
+        [HttpPatch("{id}")]
+        [Route("Patch")]
+        public IActionResult PartiallyUpdateAuto(int id, [FromBody] JsonPatchDocument<Autos> patchDoc)
+        {
+            var existingAuto = _autos.Find(a => a.Id == id);
+            if (existingAuto == null)
+            {
+                return NotFound();
+            }
+
+            patchDoc.ApplyTo(existingAuto);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(existingAuto);
+        }
+
+
+        [HttpDelete("{id}")]
+        [Route("Delete")]
+        public IActionResult DeleteAuto(int id)
+        {
+            var existingAuto = _autos.Find(a => a.Id == id);
+            if (existingAuto == null)
+            {
+                return NotFound();
+            }
+
+            _autos.Remove(existingAuto);
+
+            return NoContent();
         }
 
     }
