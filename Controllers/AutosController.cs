@@ -9,7 +9,7 @@ namespace WebApiAutos.Controllers
     [Route("Autos")]
     public class AutosController : ControllerBase
     {
-        private readonly List<Autos> _autos; 
+        private List<Autos> _autos; 
 
         public AutosController()
         {
@@ -27,9 +27,9 @@ namespace WebApiAutos.Controllers
             return Ok(_autos);
         }
 
-        [HttpGet("{id}")]
-        [Route("Get")]
-        public IActionResult GetById(int id)
+        [HttpGet]
+        [Route("GetById")]
+        public IActionResult GetById([FromQuery] int id)
         {
             var auto = _autos.Find(a => a.Id == id);
             if (auto == null)
@@ -39,6 +39,25 @@ namespace WebApiAutos.Controllers
             return Ok(auto);
         }
 
+        [HttpGet("GetByMarca")]
+        public IActionResult GetByMarca([FromQuery] string marca)
+        {
+            if (string.IsNullOrEmpty(marca))
+            {
+                return Ok(_autos);
+            }
+            else
+            {
+                var autosByMarca = _autos.FindAll(a => a.Marca == marca);
+                if (autosByMarca.Count == 0)
+                {
+                    return NotFound();
+                }
+                return Ok(autosByMarca);
+            }
+        }
+
+
         [HttpPost]
         [Route("Post")]
         public IActionResult AddAuto(Autos auto)
@@ -47,9 +66,9 @@ namespace WebApiAutos.Controllers
             return CreatedAtAction(nameof(GetById), new { id = auto.Id }, auto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut]
         [Route("Put")]
-        public IActionResult UpdateAuto(int id, Autos updatedAuto)
+        public IActionResult UpdateAuto([FromQuery] int id, Autos updatedAuto)
         {
             var existingAuto = _autos.Find(a => a.Id == id);
             if (existingAuto == null)
@@ -66,9 +85,9 @@ namespace WebApiAutos.Controllers
             return Ok(existingAuto);
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch]
         [Route("Patch")]
-        public IActionResult PartiallyUpdateAuto(int id, [FromBody] JsonPatchDocument<Autos> patchDoc)
+        public IActionResult PartiallyUpdateAuto([FromQuery] int id, [FromBody] JsonPatchDocument<Autos> patchDoc)
         {
             var existingAuto = _autos.Find(a => a.Id == id);
             if (existingAuto == null)
@@ -87,9 +106,9 @@ namespace WebApiAutos.Controllers
         }
 
 
-        [HttpDelete("{id}")]
+        [HttpDelete]
         [Route("Delete")]
-        public IActionResult DeleteAuto(int id)
+        public IActionResult DeleteAuto([FromQuery] int id)
         {
             var existingAuto = _autos.Find(a => a.Id == id);
             if (existingAuto == null)
