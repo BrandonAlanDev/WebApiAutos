@@ -1,7 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Linq.Expressions;
 using WebApiAutos.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using WebApiAutos.Services;
 
 namespace WebApiAutos.Controllers
 {
@@ -9,29 +12,24 @@ namespace WebApiAutos.Controllers
     [Route("Autos")]
     public class AutosController : ControllerBase
     {
-        private List<Autos> _autos; 
-
-        public AutosController()
+        private readonly AutosService _autos;
+        public AutosController(AutosService autosService)
         {
-            _autos = new List<Autos>
-            {
-                new Autos {Id = 0, Marca = "Toyota", Modelo = "Corolla", Year = 2022, Caballos = 150, VelocidadMaxima = 200 },
-                new Autos {Id = 1,  Marca = "Ford", Modelo = "Mustang", Year = 2021, Caballos = 300, VelocidadMaxima = 250 }
-            };
+            _autos = autosService;
         }
 
         [HttpGet]
         [Route("Get")]
         public IActionResult GetAll()
         {
-            return Ok(_autos);
+            return Ok(_autos.GetAllAutos());
         }
 
         [HttpGet]
         [Route("GetById")]
         public IActionResult GetById([FromQuery] int id)
         {
-            var auto = _autos.Find(a => a.Id == id);
+            var auto = _autos.GetAllAutos().Find(a => a.Id == id);
             if (auto == null)
             {
                 return NotFound();
@@ -44,11 +42,11 @@ namespace WebApiAutos.Controllers
         {
             if (string.IsNullOrEmpty(marca))
             {
-                return Ok(_autos);
+                return Ok(_autos.GetAllAutos());
             }
             else
             {
-                var autosByMarca = _autos.FindAll(a => a.Marca == marca);
+                var autosByMarca = _autos.GetAllAutos().FindAll(a => a.Marca == marca);
                 if (autosByMarca.Count == 0)
                 {
                     return NotFound();
@@ -62,64 +60,64 @@ namespace WebApiAutos.Controllers
         [Route("Post")]
         public IActionResult AddAuto(Autos auto)
         {
-            _autos.Add(auto);
+            _autos.AddAuto(auto); // Llama al método AddAuto del servicio para agregar el auto
             return CreatedAtAction(nameof(GetById), new { id = auto.Id }, auto);
         }
 
         [HttpPut]
         [Route("Put")]
-        public IActionResult UpdateAuto([FromQuery] int id, Autos updatedAuto)
+        public IActionResult UpdateAuto([FromQuery]int id, Autos updatedAuto)
         {
-            var existingAuto = _autos.Find(a => a.Id == id);
+            var existingAuto = _autos.GetAutoById(id); // Obtener el auto existente por su ID
+
             if (existingAuto == null)
             {
                 return NotFound();
             }
 
+            // Actualizar las propiedades del auto existente con los valores del auto actualizado
             existingAuto.Marca = updatedAuto.Marca;
             existingAuto.Modelo = updatedAuto.Modelo;
             existingAuto.Year = updatedAuto.Year;
             existingAuto.Caballos = updatedAuto.Caballos;
             existingAuto.VelocidadMaxima = updatedAuto.VelocidadMaxima;
 
+            // Llamar al método de AutosService para actualizar el auto en la lista
+            _autos.UpdateAuto(existingAuto);
+
             return Ok(existingAuto);
         }
 
         [HttpPatch]
         [Route("Patch")]
-        public IActionResult PartiallyUpdateAuto([FromQuery] int id, [FromBody] JsonPatchDocument<Autos> patchDoc)
+        public IActionResult PatchUpdateAuto([FromQuery]int id, Autos updatedAuto)
         {
-            var existingAuto = _autos.Find(a => a.Id == id);
+            var existingAuto = _autos.GetAutoById(id); // Obtener el auto existente por su ID
+
             if (existingAuto == null)
             {
                 return NotFound();
             }
-
-            patchDoc.ApplyTo(existingAuto);
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
+            updatedAuto.Id = id;
+            _autos.PatchUpdateAuto(updatedAuto);
+            existingAuto = _autos.GetAutoById(id);
             return Ok(existingAuto);
         }
 
-
         [HttpDelete]
         [Route("Delete")]
-        public IActionResult DeleteAuto([FromQuery] int id)
+        public IActionResult DeleteAuto(int id)
         {
-            var existingAuto = _autos.Find(a => a.Id == id);
+            var existingAuto = _autos.GetAutoById(id);
+
             if (existingAuto == null)
             {
                 return NotFound();
             }
 
-            _autos.Remove(existingAuto);
+            _autos.DeleteAuto(existingAuto);
 
             return NoContent();
         }
-
     }
 }
