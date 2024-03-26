@@ -6,6 +6,7 @@ namespace WebApiAutos.Services
     public class AutosService
     {
         private List<Autos> _autos;
+        private int Ids;
 
         public AutosService()
         {
@@ -14,6 +15,8 @@ namespace WebApiAutos.Services
                 new Autos {Id = 0, Marca = "Toyota", Modelo = "Corolla", Year = 2022, Caballos = 150, VelocidadMaxima = 200 },
                 new Autos {Id = 1,  Marca = "Ford", Modelo = "Mustang", Year = 2021, Caballos = 300, VelocidadMaxima = 250 }
             };
+
+            Ids=2;
         }
 
         public List<Autos> GetAllAutos()
@@ -22,7 +25,9 @@ namespace WebApiAutos.Services
         }
         public void AddAuto(Autos auto)
         {
+            auto.Id = Ids;
             _autos.Add(auto);
+            Ids++;
         }
         public Autos GetAutoById(int id)
         {
